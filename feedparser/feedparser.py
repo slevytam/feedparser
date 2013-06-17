@@ -2315,6 +2315,10 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'time', 'tfoot',
         'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'noscript'])
 
+	possible_elements = set(['embed', 'object', 'iframe'])
+	
+	acceptable_domains = set(['youtube.com', 'vimeo.com'])
+
     acceptable_attributes = set(['abbr', 'accept', 'accept-charset', 'accesskey',
       'action', 'align', 'alt', 'autocomplete', 'autofocus', 'axis',
       'background', 'balance', 'bgcolor', 'bgproperties', 'border',
@@ -2432,7 +2436,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     def unknown_starttag(self, tag, attrs):
         acceptable_attributes = self.acceptable_attributes
         keymap = {}
-        if not tag in self.acceptable_elements or self.svgOK:
+        if not tag in self.acceptable_elements or self.svgOK or self.possible_elements:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack += 1
 
