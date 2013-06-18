@@ -2437,23 +2437,23 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         acceptable_attributes = self.acceptable_attributes
         keymap = {}
 
-		if tag in self.possible_elements:
-			tag_attrs = self.normalize_attrs(attrs)
-			if 'href' in tag_attrs:
-				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
-			elif 'src' in tag_attrs:
-				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
-			elif 'data' in tag_attrs:
-				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
+	if tag in self.possible_elements:
+		tag_attrs = self.normalize_attrs(attrs)
+		if 'href' in tag_attrs:
+			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
+		elif 'src' in tag_attrs:
+			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
+		elif 'data' in tag_attrs:
+			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
 
-			if parsed_link != None and parsed_link != '':
-				acceptable_domain=0
-				for domain in self.acceptable_domains:
-					if parsed_link.netloc.endswith(domain):
-						acceptable_domain=1
-						break
-				if acceptable_domain==0:
-					return
+		if parsed_link != None and parsed_link != '':
+			acceptable_domain=0
+			for domain in self.acceptable_domains:
+				if parsed_link.netloc.endswith(domain):
+					acceptable_domain=1
+					break
+			if acceptable_domain==0:
+				return
 
 	if not tag in self.acceptable_elements or self.svgOK or self.possible_elements:
             if tag in self.unacceptable_elements_with_end_tag:
