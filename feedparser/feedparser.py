@@ -2315,9 +2315,9 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'time', 'tfoot',
         'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'noscript'])
 
-	possible_elements = set(['embed', 'object', 'iframe'])
+    possible_elements = set(['embed', 'object', 'iframe'])
 	
-	acceptable_domains = set(['youtube.com', 'vimeo.com'])
+    acceptable_domains = set(['youtube.com', 'vimeo.com'])
 
     acceptable_attributes = set(['abbr', 'accept', 'accept-charset', 'accesskey',
       'action', 'align', 'alt', 'autocomplete', 'autofocus', 'axis',
@@ -2436,7 +2436,26 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     def unknown_starttag(self, tag, attrs):
         acceptable_attributes = self.acceptable_attributes
         keymap = {}
-        if not tag in self.acceptable_elements or self.svgOK or self.possible_elements:
+
+		if tag in self.possible_elements:
+			tag_attrs = self.normalize_attrs(attrs)
+			if 'href' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
+			elif 'src' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
+			elif 'data' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
+
+			if parsed_link != None and parsed_link != '':
+				acceptable_domain=0
+				for domain in self.acceptable_domains:
+					if parsed_link.netloc.endswith(domain):
+						acceptable_domain=1
+						break
+				if acceptable_domain==0:
+					return
+
+	if not tag in self.acceptable_elements or self.svgOK or self.possible_elements:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack += 1
 
@@ -2497,6 +2516,24 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         _BaseHTMLProcessor.unknown_starttag(self, tag, clean_attrs)
 
     def unknown_endtag(self, tag):
+    	if tag in self.possible_elements:
+			tag_attrs = self.normalize_attrs(attrs)
+			if 'href' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
+			elif 'src' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
+			elif 'data' in tag_attrs:
+				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
+
+			if parsed_link != None and parsed_link != '':
+				acceptable_domain=0
+				for domain in self.acceptable_domains:
+					if parsed_link.netloc.endswith(domain):
+						acceptable_domain=1
+						break
+				if acceptable_domain==0:
+					return
+				
         if not tag in self.acceptable_elements:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack -= 1
