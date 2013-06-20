@@ -2440,12 +2440,23 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 	if tag in self.possible_elements:
 		print "tag in self.possible_elements"
 		tag_attrs = self.normalize_attrs(attrs)
+		print "tag_attrs"
 		if 'href' in tag_attrs:
+			print "if href"
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
+			print "after parsed"
 		elif 'src' in tag_attrs:
+			print "if src"
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
+			print "after src parsed"
 		elif 'data' in tag_attrs:
+			print "if data"
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
+			print "after data parsed"
+		else:
+			print "TAG", tag
+			print "TAG ATTRS", tag_attrs
+			print "NO HREF, SRC, or DATA SO RETURNING"
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
