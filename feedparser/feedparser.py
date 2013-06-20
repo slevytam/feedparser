@@ -2537,6 +2537,10 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
 		elif 'data' in tag_attrs:
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
+		else:
+			print "UNKNOWN ENDTAG", tag
+			print "TAG ATTRS", tag_attrs
+			print "NO HREF, SRC, or DATA SO RETURNING"
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
