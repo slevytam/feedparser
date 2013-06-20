@@ -2438,19 +2438,15 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         keymap = {}
 
 	if tag in self.possible_elements:
-		print "tag in self.possible_elements"
-		tag_attrs = self.normalize_attrs(attrs)
-		print "tag_attrs"
-		
-		for attr in tag_attrs:
-			if 'href' in attr:
-				link=attr['href']
+		for key, value in self.normalize_attrs(attrs):
+			if key == 'href':
+				link=value
 				break
-			if 'src' in attr:
-				link=attr['src']
+			if key == 'src':
+				link=value
 				break
-			if 'data' in attr:
-				link=attr['data']
+			if key == 'data':
+				link=value
 				break
 		if link==None or link=="":
 			return
@@ -2530,17 +2526,15 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     def unknown_endtag(self, tag):
     	if tag in self.possible_elements:
     		print "tag in self.possible_elements end"
-		tag_attrs = self.normalize_attrs(attrs)
-		
-		for attr in tag_attrs:
-			if 'href' in attr:
-				link=attr['href']
+		for key, value in self.normalize_attrs(attrs):
+			if key == 'href':
+				link=value
 				break
-			if 'src' in attr:
-				link=attr['src']
+			if key == 'src':
+				link=value
 				break
-			if 'data' in attr:
-				link=attr['data']
+			if key == 'data':
+				link=value
 				break
 		if link==None or link=="":
 			return
