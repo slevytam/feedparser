@@ -2524,34 +2524,8 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         _BaseHTMLProcessor.unknown_starttag(self, tag, clean_attrs)
 
     def unknown_endtag(self, tag):
-    	if tag in self.possible_elements:
-    		print "tag in self.possible_elements end"
-		for key, value in self.normalize_attrs(attrs):
-			if key == 'href':
-				link=value
-				break
-			if key == 'src':
-				link=value
-				break
-			if key == 'data':
-				link=value
-				break
-		if link==None or link=="":
-			return
-		print "LINK", link
-		parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
-		print "PARSED_LINK", parsed_link
-
-		if parsed_link != None and parsed_link != '':
-			acceptable_domain=0
-			for domain in self.acceptable_domains:
-				if parsed_link.netloc.endswith(domain):
-					acceptable_domain=1
-					break
-			if acceptable_domain==0:
-				return
 				
-        if not tag in self.acceptable_elements:
+        if tag not in self.acceptable_elements or tag not in self.possible_elements:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack -= 1
             if self.mathmlOK and tag in self.mathml_elements:
