@@ -2457,6 +2457,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 			print "TAG", tag
 			print "TAG ATTRS", tag_attrs
 			print "NO HREF, SRC, or DATA SO RETURNING"
+			return
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
@@ -2541,6 +2542,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 			print "UNKNOWN ENDTAG", tag
 			print "TAG ATTRS", tag_attrs
 			print "NO HREF, SRC, or DATA SO RETURNING"
+			return
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
