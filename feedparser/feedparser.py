@@ -2441,23 +2441,22 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 		print "tag in self.possible_elements"
 		tag_attrs = self.normalize_attrs(attrs)
 		print "tag_attrs"
-		if any('href' x for x in tag_attrs):
-			print "if href"
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
-			print "after parsed"
-		elif any('src' x for x in tag_attrs):
-			print "if src"
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
-			print "after src parsed"
-		elif any('data' x for x in tag_attrs):
-			print "if data"
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
-			print "after data parsed"
-		else:
-			print "TAG", tag
-			print "TAG ATTRS", tag_attrs
-			print "NO HREF, SRC, or DATA SO RETURNING"
+		
+		for attr in tag_attrs:
+			if 'href' in attr:
+				link=attr['href']
+				break
+			if 'src' in attr:
+				link=attr['src']
+				break
+			if 'data' in attr:
+				link=attr['data']
+				break
+		if link==None or link=="":
 			return
+		print "LINK", link
+		parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
+		print "PARSED_LINK", parsed_link
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
@@ -2532,17 +2531,22 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     	if tag in self.possible_elements:
     		print "tag in self.possible_elements end"
 		tag_attrs = self.normalize_attrs(attrs)
-		if  any('href' in x for x in tag_attrs):
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
-		elif any('src' in x for x in tag_attrs):
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['srf']))
-		elif any('data' in x for x in tag_attrs):
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['data']))
-		else:
-			print "UNKNOWN ENDTAG", tag
-			print "TAG ATTRS", tag_attrs
-			print "NO HREF, SRC, or DATA SO RETURNING"
+		
+		for attr in tag_attrs:
+			if 'href' in attr:
+				link=attr['href']
+				break
+			if 'src' in attr:
+				link=attr['src']
+				break
+			if 'data' in attr:
+				link=attr['data']
+				break
+		if link==None or link=="":
 			return
+		print "LINK", link
+		parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
+		print "PARSED_LINK", parsed_link
 
 		if parsed_link != None and parsed_link != '':
 			acceptable_domain=0
