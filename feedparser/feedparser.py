@@ -2438,6 +2438,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         keymap = {}
 
 	if tag in self.possible_elements:
+		print "tag in self.possible_elements"
 		tag_attrs = self.normalize_attrs(attrs)
 		if 'href' in tag_attrs:
 			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
@@ -2517,6 +2518,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
     def unknown_endtag(self, tag):
     	if tag in self.possible_elements:
+    		print "tag in self.possible_elements end"
 			tag_attrs = self.normalize_attrs(attrs)
 			if 'href' in tag_attrs:
 				parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(tag_attrs['href']))
