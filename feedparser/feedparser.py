@@ -2314,8 +2314,6 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         'small', 'sound', 'source', 'spacer', 'span', 'strike', 'strong',
         'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'time', 'tfoot',
         'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'noscript'])
-
-    possible_elements = set(['embed', 'iframe'])
 	
     acceptable_domains = set(['youtube.com', 'vimeo.com'])
 
