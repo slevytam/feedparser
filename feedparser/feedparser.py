@@ -2315,7 +2315,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'time', 'tfoot',
         'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var', 'video', 'noscript'])
 
-    possible_elements = set(['embed', 'object', 'iframe'])
+    possible_elements = set(['embed', 'iframe'])
 	
     acceptable_domains = set(['youtube.com', 'vimeo.com'])
 
@@ -2366,6 +2366,18 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
     valid_css_values = re.compile('^(#[0-9a-f]+|rgb\(\d+%?,\d*%?,?\d*%?\)?|' +
       '\d{0,2}\.?\d{0,2}(cm|em|ex|in|mm|pc|pt|px|%|,|\))?)$')
+      	
+	video_elements = set(['embed', 'iframe'])
+	
+	video_attributes = set(['allowfullscreen', 'allowscriptacces', 'align', 'autohide', 
+		'autoplay', 'base', 'bgcolor', 'cc_load_policy', 
+		'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'flashvars', 
+		'frameborder', 'fs', 'fullScreenAspectRatio', 
+		'id', 'iv_load_policy', 
+		'list', 'listType', 'loop', 'menu', 'modestbranding', 'mozallowfullscreen', 'name', 
+		'origin', 'play', 'playerapiid', 'pluginspage', 'playlist', 'height', 'quality', 
+		'rel', 'salign', 'scale', 
+		'showinfo', 'src', 'start', 'theme', 'type', 'webkitAllowFullScreen', 'width', 'wmode'])
 
     mathml_elements = set(['annotation', 'annotation-xml', 'maction', 'math',
       'merror', 'mfenced', 'mfrac', 'mi', 'mmultiscripts', 'mn', 'mo', 'mover', 'mpadded',
@@ -2432,38 +2444,13 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         self.unacceptablestack = 0
         self.mathmlOK = 0
         self.svgOK = 0
+        self.videoOK = 0
 
     def unknown_starttag(self, tag, attrs):
         acceptable_attributes = self.acceptable_attributes
         keymap = {}
 
-	if tag in self.possible_elements:
-		for key, value in self.normalize_attrs(attrs):
-			if key == 'href':
-				link=value
-				break
-			if key == 'src':
-				link=value
-				break
-			if key == 'data':
-				link=value
-				break
-		if link==None or link=="":
-			return
-		print "LINK", link
-		parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
-		print "PARSED_LINK", parsed_link
-
-		if parsed_link != None and parsed_link != '':
-			acceptable_domain=0
-			for domain in self.acceptable_domains:
-				if parsed_link.netloc.endswith(domain):
-					acceptable_domain=1
-					break
-			if acceptable_domain==0:
-				return
-
-	if not tag in self.acceptable_elements or self.svgOK or self.possible_elements:
+	if not tag in self.acceptable_elements or self.svgOK:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack += 1
 
@@ -2480,10 +2467,30 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
                 self.mathmlOK += 1
             if tag=='svg' and ('xmlns','http://www.w3.org/2000/svg') in attrs:
                 self.svgOK += 1
+            if tag in self.video_elements:
+		for key, value in self.normalize_attrs(attrs):
+			if key == 'href':
+				link=value
+				break
+			if key == 'src':
+				link=value
+				break
+			if key == 'data':
+				link=value
+				break
+		if link!=None or link!="":
+			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
+			if parsed_link != None and parsed_link != '':
+				for domain in self.acceptable_domains:
+					if parsed_link.netloc.endswith(domain):
+						self.videoOK += 1
+						break
 
             # chose acceptable attributes based on tag class, else bail
             if  self.mathmlOK and tag in self.mathml_elements:
                 acceptable_attributes = self.mathml_attributes
+            elif self.videoOK and tag in self.video_elements:
+            	acceptable_attributes = self.video_attributes
             elif self.svgOK and tag in self.svg_elements:
                 # for most vocabularies, lowercasing is a good idea.  Many
                 # svg elements, however, are camel case
@@ -2525,12 +2532,15 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
     def unknown_endtag(self, tag):
 				
-        if tag not in self.acceptable_elements or tag not in self.possible_elements:
+        if not tag in self.acceptable_elements:
             if tag in self.unacceptable_elements_with_end_tag:
                 self.unacceptablestack -= 1
             if self.mathmlOK and tag in self.mathml_elements:
                 if tag == 'math' and self.mathmlOK:
                     self.mathmlOK -= 1
+            elif self.videoOK and tag in self.video_elements:
+                if tag in self.video_elements and self.videoOK:
+                    self.videoOK -= 1
             elif self.svgOK and tag in self.svg_elements:
                 tag = self.svg_elem_map.get(tag,tag)
                 if tag == 'svg' and self.svgOK:
