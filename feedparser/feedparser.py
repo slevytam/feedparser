@@ -2468,23 +2468,23 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             if tag=='svg' and ('xmlns','http://www.w3.org/2000/svg') in attrs:
                 self.svgOK += 1
             if tag in self.video_elements:
-		for key, value in self.normalize_attrs(attrs):
-			if key == 'href':
-				link=value
-				break
-			if key == 'src':
-				link=value
-				break
-			if key == 'data':
-				link=value
-				break
-		if link!=None or link!="":
-			parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
-			if parsed_link != None and parsed_link != '':
-				for domain in self.acceptable_domains:
-					if parsed_link.netloc.endswith(domain):
-						self.videoOK += 1
+				for key, value in self.normalize_attrs(attrs):
+					if key == 'href':
+						link=value
 						break
+					if key == 'src':
+						link=value
+						break
+					if key == 'data':
+						link=value
+						break
+				if link!=None or link!="":
+					parsed_link=urlparse.urlparse(_makeSafeAbsoluteURI(link))
+					if parsed_link != None and parsed_link != '':
+						for domain in self.acceptable_domains:
+							if parsed_link.netloc.endswith(domain):
+								self.videoOK += 1
+								break
 
             # chose acceptable attributes based on tag class, else bail
             if  self.mathmlOK and tag in self.mathml_elements:
