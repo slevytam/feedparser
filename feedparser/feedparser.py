@@ -2367,17 +2367,17 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     valid_css_values = re.compile('^(#[0-9a-f]+|rgb\(\d+%?,\d*%?,?\d*%?\)?|' +
       '\d{0,2}\.?\d{0,2}(cm|em|ex|in|mm|pc|pt|px|%|,|\))?)$')
       
-	video_elements = set(['embed', 'iframe'])
+    video_elements = set(['embed', 'iframe'])
 	
-	video_attributes = set(['allowfullscreen', 'allowscriptacces', 'align', 'autohide', 
-		'autoplay', 'base', 'bgcolor', 'cc_load_policy', 
-		'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'flashvars', 
-		'frameborder', 'fs', 'fullScreenAspectRatio', 
-		'id', 'iv_load_policy', 
-		'list', 'listType', 'loop', 'menu', 'modestbranding', 'mozallowfullscreen', 'name', 
-		'origin', 'play', 'playerapiid', 'pluginspage', 'playlist', 'height', 'quality', 
-		'rel', 'salign', 'scale', 
-		'showinfo', 'src', 'start', 'theme', 'type', 'webkitAllowFullScreen', 'width', 'wmode'])
+    video_attributes = set(['allowfullscreen', 'allowscriptacces', 'align', 'autohide', 
+    	'autoplay', 'base', 'bgcolor', 'cc_load_policy', 
+    	'color', 'controls', 'disablekb', 'enablejsapi', 'end', 'flashvars', 
+    	'frameborder', 'fs', 'fullScreenAspectRatio', 
+    	'id', 'iv_load_policy', 
+    	'list', 'listType', 'loop', 'menu', 'modestbranding', 'mozallowfullscreen', 'name', 
+    	'origin', 'play', 'playerapiid', 'pluginspage', 'playlist', 'height', 'quality', 
+    	'rel', 'salign', 'scale', 
+    	'showinfo', 'src', 'start', 'theme', 'type', 'webkitAllowFullScreen', 'width', 'wmode'])
 
     mathml_elements = set(['annotation', 'annotation-xml', 'maction', 'math',
       'merror', 'mfenced', 'mfrac', 'mi', 'mmultiscripts', 'mn', 'mo', 'mover', 'mpadded',
